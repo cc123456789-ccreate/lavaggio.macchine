@@ -1,0 +1,2163 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>AquaLux – Lavaggio Auto a Mano</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:   #060d14;
+      --deep:    #071220;
+      --surface: #0a1828;
+      --lift:    #0f2035;
+      --gold:    #3ab8e0;
+      --gold2:   #7dd4f0;
+      --gold3:   #c8f0ff;
+      --white:   #eef8fc;
+      --muted:   #5a8aa0;
+      --line:    rgba(58,184,224,0.18);
+      --linew:   rgba(238,248,252,0.07);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ═══════════════════════════════
+       HERO
+    ═══════════════════════════════ */
+    .hero {
+      position: relative;
+      height: 100svh;
+      min-height: 560px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    /* SVG car scene */
+
+
+    /* car silhouette background */
+    .car-bg-layer {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .car-bg-layer svg {
+      width: min(900px, 115vw);
+      opacity: 0;
+      margin-bottom: -20px;
+    }
+
+    /* animated water drops */
+    .drops-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .drop {
+      position: absolute;
+      top: -30px;
+      width: 1.5px;
+      border-radius: 0 0 2px 2px;
+      animation: falling linear infinite;
+      background: linear-gradient(180deg, transparent, #7dd4f0, transparent);
+    }
+
+    @keyframes falling {
+      0%   { transform: translateY(-40px); opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 0.6; }
+      100% { transform: translateY(110svh); opacity: 0; }
+    }
+
+    /* radial vignette */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 30%, rgba(58,184,224,0.13) 0%, transparent 65%),
+        radial-gradient(ellipse 70% 70% at 50% 50%, transparent 0%, var(--black) 100%);
+      z-index: 2;
+    }
+
+    /* horizontal thin line */
+    .hero::after {
+      content: '';
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      bottom: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #3ab8e0, transparent);
+      z-index: 5;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 4;
+      padding: 0 28px;
+    }
+
+    .hero-pre {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 28px;
+      animation: riseIn 1s ease 0.2s both;
+      width: 100%;
+      padding: 0 24px;
+    }
+
+    .hero-pre span {
+      display: block;
+      height: 1px;
+      flex: 1;
+      background: linear-gradient(90deg, transparent, #3ab8e0);
+    }
+
+    .hero-pre span:last-child {
+      background: linear-gradient(90deg, #3ab8e0, transparent);
+    }
+
+    .hero-pre-text {
+      font-size: 9.5px;
+      font-weight: 400;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      white-space: nowrap;
+      padding: 0 16px;
+    }
+
+    .hero-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.8rem, 16vw, 6.5rem);
+      font-weight: 300;
+      letter-spacing: 8px;
+      text-transform: uppercase;
+      line-height: 1;
+      color: var(--white);
+      animation: riseIn 1s ease 0.35s both;
+    }
+
+    .hero-logo em {
+      font-style: italic;
+      color: var(--gold2);
+    }
+
+    .hero-car-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 28px;
+      animation: riseIn 1s ease 0.9s both;
+    }
+
+    .hero-car-icon {
+      font-size: 2rem;
+      filter: drop-shadow(0 0 12px rgba(58,184,224,0.6));
+    }
+
+    .hero-car-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .hero-car-lines span {
+      display: block;
+      height: 1px;
+      border-radius: 1px;
+      background: linear-gradient(90deg, rgba(58,184,224,0.7), transparent);
+    }
+
+    .hero-car-lines span:nth-child(1) { width: 48px; }
+    .hero-car-lines span:nth-child(2) { width: 36px; opacity: 0.6; }
+    .hero-car-lines span:nth-child(3) { width: 24px; opacity: 0.35; }
+
+    .hero-water-msg {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 22px;
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 1.5px;
+      color: rgba(125,212,240,0.7);
+      animation: riseIn 1s ease 0.7s both;
+      padding: 0 10px;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .hero-tagline {
+      font-size: 12px;
+      font-weight: 300;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 16px;
+      animation: riseIn 1s ease 0.5s both;
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      animation: riseIn 1s ease 0.8s both;
+    }
+
+    .hero-scroll-text {
+      font-size: 8.5px;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 38px;
+      background: linear-gradient(180deg, #3ab8e0, transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(0.7); }
+      50% { opacity: 1; transform: scaleY(1); }
+    }
+
+
+    /* ═══════════════════════════════
+       SECTION DIVIDER
+    ═══════════════════════════════ */
+    .sec-header {
+      text-align: center;
+      padding: 70px 24px 48px;
+    }
+
+    .sec-ornament {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .orn-line {
+      height: 1px;
+      width: 50px;
+      background: linear-gradient(90deg, transparent, #3ab8e0);
+    }
+
+    .orn-line.rev { background: linear-gradient(90deg, var(--gold), transparent); }
+
+    .orn-diamond {
+      width: 5px; height: 5px;
+      border: 1px solid #3ab8e0;
+      transform: rotate(45deg);
+    }
+
+    .sec-label {
+      font-size: 9px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 400;
+    }
+
+    .sec-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.9rem, 7vw, 2.8rem);
+      font-weight: 300;
+      letter-spacing: 1px;
+      color: var(--white);
+      line-height: 1.2;
+    }
+
+    .sec-title em { font-style: italic; color: var(--gold2); }
+
+    .sec-sub {
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 1px;
+      margin-top: 10px;
+    }
+
+
+    /* ═══════════════════════════════
+       PRICE CARDS — thin line style
+    ═══════════════════════════════ */
+    .plans-wrap {
+      padding: 0 20px 20px;
+      max-width: 480px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1px; /* cards separated by 1px gold lines */
+    }
+
+    .plan-card {
+      position: relative;
+      background: var(--deep);
+      border: 1px solid var(--line);
+      padding: 32px 28px;
+      cursor: pointer;
+      transition: background 0.35s ease, border-color 0.35s ease;
+      overflow: hidden;
+    }
+
+    .plan-card:first-child { border-radius: 3px 3px 0 0; }
+    .plan-card:last-child  { border-radius: 0 0 3px 3px; }
+
+    /* gold left accent on hover */
+    .plan-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--gold), var(--gold2));
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: transform 0.4s ease;
+    }
+
+    .plan-card:hover::before,
+    .plan-card.active::before { transform: scaleY(1); }
+
+    .plan-card:hover,
+    .plan-card.active {
+      background: var(--surface);
+      border-color: rgba(184,146,74,0.35);
+    }
+
+    /* shimmer sweep on hover */
+    .plan-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%; bottom: 0;
+      width: 50%;
+      background: linear-gradient(90deg, transparent, rgba(184,146,74,0.04), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .plan-card:hover::after { left: 150%; }
+
+    .card-inner {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .card-left { flex: 1; }
+
+    .plan-badge {
+      display: inline-block;
+      font-size: 8px;
+      font-weight: 400;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid var(--line);
+      padding: 3px 8px;
+      border-radius: 1px;
+      margin-bottom: 12px;
+    }
+
+    .plan-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.75rem;
+      font-weight: 300;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--white);
+      line-height: 1;
+    }
+
+    .plan-desc {
+      font-size: 11.5px;
+      color: var(--muted);
+      letter-spacing: 0.8px;
+      margin-top: 6px;
+    }
+
+    .card-right { text-align: right; flex-shrink: 0; }
+
+    .plan-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.8rem;
+      font-weight: 300;
+      color: var(--gold2);
+      line-height: 1;
+    }
+
+    .plan-currency {
+      font-size: 1.1rem;
+      vertical-align: super;
+      color: var(--gold);
+    }
+
+    .plan-per {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    .card-divider {
+      height: 1px;
+      background: linear-gradient(90deg, var(--line), transparent);
+      margin: 20px 0;
+    }
+
+    .features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .features li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      letter-spacing: 0.8px;
+      color: #9a9690;
+    }
+
+    .feat-mark {
+      width: 14px; height: 14px;
+      border: 1px solid #3ab8e0;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .feat-mark svg { width: 8px; height: 8px; }
+
+    .feat-mark.no {
+      border-color: #333;
+      opacity: 0.4;
+    }
+
+    .features li.dim { opacity: 0.35; text-decoration: line-through; text-decoration-color: #444; }
+
+    .btn-choose {
+      width: 100%;
+      margin-top: 22px;
+      padding: 14px 20px;
+      background: transparent;
+      border: 1px solid #3ab8e0;
+      color: var(--gold2);
+      font-family: 'Jost', sans-serif;
+      font-size: 10.5px;
+      font-weight: 400;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 1px;
+      transition: background 0.3s, color 0.3s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn-choose:hover {
+      background: var(--gold);
+      color: var(--black);
+    }
+
+    /* POPULAR glow */
+    .plan-card.featured {
+      border-color: rgba(184,146,74,0.4);
+    }
+
+
+    /* ═══════════════════════════════
+       REFERRAL SECTION
+    ═══════════════════════════════ */
+    .referral-section {
+      padding: 60px 20px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .referral-card {
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      padding: 36px 28px;
+      background: var(--deep);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* gold corner accents */
+    .referral-card::before,
+    .referral-card::after {
+      content: '';
+      position: absolute;
+      width: 22px; height: 22px;
+    }
+
+    .referral-card::before {
+      top: -1px; left: -1px;
+      border-top: 1px solid var(--gold2);
+      border-left: 1px solid var(--gold2);
+    }
+
+    .referral-card::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 1px solid var(--gold2);
+      border-right: 1px solid var(--gold2);
+    }
+
+    .ref-icon {
+      font-size: 2.2rem;
+      margin-bottom: 16px;
+    }
+
+    .ref-tag {
+      font-size: 8px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ref-tag::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--line), transparent);
+    }
+
+    .ref-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.85rem;
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1.2;
+      margin-bottom: 14px;
+    }
+
+    .ref-title em { font-style: italic; color: var(--gold2); }
+
+    .ref-desc {
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+      line-height: 1.8;
+      margin-bottom: 22px;
+    }
+
+    .ref-highlight {
+      background: var(--lift);
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .ref-highlight-left {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    .ref-highlight-left strong {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 300;
+      color: var(--white);
+      margin-top: 2px;
+    }
+
+    .ref-price {
+      text-align: right;
+    }
+
+    .ref-old {
+      font-size: 10px;
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+
+    .ref-new {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      color: var(--gold2);
+      line-height: 1;
+    }
+
+    .ref-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .ref-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      font-size: 12px;
+      color: #8a8880;
+      letter-spacing: 0.4px;
+      line-height: 1.6;
+    }
+
+    .step-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      color: var(--gold);
+      min-width: 18px;
+      line-height: 1.2;
+    }
+
+    .btn-ref-wa {
+      width: 100%;
+      padding: 14px;
+      background: transparent;
+      border: 1px solid #25d366;
+      color: #25d366;
+      font-family: 'Jost', sans-serif;
+      font-size: 10.5px;
+      font-weight: 400;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 1px;
+      text-decoration: none;
+      display: block;
+      text-align: center;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .btn-ref-wa:hover { background: #25d366; color: var(--black); }
+
+
+    /* ═══════════════════════════════
+       WHATSAPP CONTACT SECTION
+    ═══════════════════════════════ */
+    .contact-section {
+      padding: 0 20px 80px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .contact-card {
+      border-top: 1px solid var(--line);
+      padding-top: 40px;
+      text-align: center;
+    }
+
+    .contact-ornament {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .contact-ornament span {
+      height: 1px;
+      width: 40px;
+      background: linear-gradient(90deg, transparent, var(--line));
+    }
+
+    .contact-ornament span:last-child {
+      background: linear-gradient(90deg, var(--line), transparent);
+    }
+
+    .contact-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 300;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+
+    .contact-sub {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 1px;
+      margin-bottom: 24px;
+    }
+
+    .btn-wa {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 32px;
+      border: 1px solid #25d366;
+      color: #25d366;
+      font-family: 'Jost', sans-serif;
+      font-size: 10.5px;
+      font-weight: 400;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 1px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .btn-wa:hover { background: #25d366; color: var(--black); }
+
+    .wa-icon { font-size: 1.1rem; }
+
+
+    /* ── BOOKING FORM ── */
+    .form-group { margin-bottom: 16px; }
+
+    .form-label {
+      display: block;
+      font-size: 9px;
+      font-weight: 400;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 7px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 13px 16px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      color: var(--white);
+      font-family: 'Jost', sans-serif;
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: 0.5px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-input::placeholder { color: var(--muted); font-size: 13px; }
+    .form-input:focus { border-color: var(--gold); }
+
+    .form-error {
+      font-size: 11px;
+      color: #e05555;
+      letter-spacing: 0.5px;
+      min-height: 18px;
+      margin-bottom: 14px;
+    }
+
+    .pay-options {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .pay-opt {
+      flex: 1;
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      padding: 18px 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.25s, background 0.25s;
+    }
+
+    .pay-opt:hover { border-color: var(--gold); }
+    .pay-opt.selected { border-color: var(--gold); background: rgba(58,184,224,0.07); }
+
+    .pay-icon { font-size: 1.8rem; margin-bottom: 8px; }
+
+    .pay-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: var(--white);
+      margin-bottom: 5px;
+    }
+
+    .pay-desc {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.4px;
+      line-height: 1.5;
+    }
+
+    .sheet-btn-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .sheet-back-btn {
+      padding: 14px 16px;
+      background: none;
+      border: 1px solid var(--linew);
+      color: var(--muted);
+      font-family: 'Jost', sans-serif;
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 1px;
+      white-space: nowrap;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .sheet-back-btn:hover { border-color: var(--gold); color: var(--gold2); }
+
+    /* ═══════════════════════════════
+       AVAILABILITY OVERLAY
+    ═══════════════════════════════ */
+    #avail-section {
+      display: none;
+      padding: 0 20px 100px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    #avail-section.show { display: block; animation: riseIn 0.5s ease both; }
+
+    .avail-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-family: 'Jost', sans-serif;
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      padding: 0;
+      margin-bottom: 32px;
+      transition: color 0.2s;
+    }
+
+    .avail-back:hover { color: var(--gold); }
+
+    .avail-plan-info {
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      padding: 22px 24px;
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+
+    .avail-plan-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 300;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+
+    .avail-plan-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      color: var(--gold2);
+    }
+
+    .week-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .week-lbl {
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .week-btns { display: flex; gap: 8px; }
+
+    .wk-btn {
+      width: 32px; height: 32px;
+      border: 1px solid var(--line);
+      background: none;
+      color: var(--muted);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem;
+      border-radius: 1px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .wk-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    .slots-list { display: flex; flex-direction: column; gap: 0; }
+
+    .slot-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--linew);
+      cursor: pointer;
+      transition: padding-left 0.25s;
+    }
+
+    .slot-row.free:hover { padding-left: 6px; }
+    .slot-row.occupied { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
+    .slot-row.selected { padding-left: 6px; }
+
+    .slot-left { display: flex; align-items: center; gap: 18px; }
+
+    .slot-date-col { min-width: 52px; }
+
+    .slot-day {
+      font-size: 8.5px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .slot-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1;
+    }
+
+    .slot-time-txt {
+      font-size: 13px;
+      font-weight: 300;
+      letter-spacing: 1px;
+      color: var(--white);
+    }
+
+    .slot-dur {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+      margin-top: 2px;
+    }
+
+    .slot-status-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+    }
+
+    .slot-row.free     .slot-status-dot { background: #2d9e5e; box-shadow: 0 0 6px #2d9e5e; }
+    .slot-row.occupied .slot-status-dot { background: #7a3030; }
+    .slot-row.selected .slot-status-dot { background: var(--gold); box-shadow: 0 0 6px var(--gold); }
+
+    /* sticky bar */
+    .book-bar {
+      display: none;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--surface);
+      border-top: 1px solid var(--line);
+      padding: 14px 20px calc(14px + env(safe-area-inset-bottom));
+      z-index: 60;
+    }
+
+    .book-bar.show { display: block; animation: slideUp 0.3s ease both; }
+
+    .book-bar-inner {
+      max-width: 480px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .book-bar-info { flex: 1; }
+    .book-bar-info small { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+    .book-bar-info strong { display: block; font-size: 12px; font-weight: 300; letter-spacing: 1px; color: var(--white); margin-top: 2px; }
+
+    .btn-book-now {
+      padding: 12px 22px;
+      background: transparent;
+      border: 1px solid #3ab8e0;
+      color: var(--gold2);
+      font-family: 'Jost', sans-serif;
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 1px;
+      transition: background 0.3s, color 0.3s;
+      white-space: nowrap;
+    }
+
+    .btn-book-now:hover { background: var(--gold); color: var(--black); }
+
+
+    /* ═══════════════════════════════
+       CONFIRM SHEET
+    ═══════════════════════════════ */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(4,4,4,0.8);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .overlay.open { display: flex; animation: fadeIn 0.25s ease both; }
+
+    .sheet {
+      background: var(--deep);
+      border-top: 1px solid var(--line);
+      border-left: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      border-radius: 4px 4px 0 0;
+      padding: 30px 24px calc(30px + env(safe-area-inset-bottom));
+      width: 100%;
+      max-width: 480px;
+      animation: slideUp 0.4s cubic-bezier(.16,1,.3,1) both;
+    }
+
+    .sheet-handle {
+      width: 32px; height: 2px;
+      background: var(--line);
+      margin: 0 auto 28px;
+    }
+
+    .sheet-pre {
+      font-size: 8px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    .sheet-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.7rem;
+      font-weight: 300;
+      color: var(--white);
+      margin-bottom: 24px;
+    }
+
+    .summary-list {
+      border-top: 1px solid var(--linew);
+      margin-bottom: 24px;
+    }
+
+    .sum-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 13px 0;
+      border-bottom: 1px solid var(--linew);
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .sum-row .lbl { color: var(--muted); }
+    .sum-row .val { color: var(--white); font-weight: 400; }
+    .sum-row .val.gold { color: var(--gold2); font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; }
+
+    .sheet-confirm {
+      width: 100%;
+      padding: 15px;
+      background: transparent;
+      border: 1px solid #3ab8e0;
+      color: var(--gold2);
+      font-family: 'Jost', sans-serif;
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 1px;
+      margin-bottom: 10px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .sheet-confirm:hover { background: var(--gold); color: var(--black); }
+
+    .sheet-cancel-btn {
+      width: 100%;
+      padding: 13px;
+      background: none;
+      border: 1px solid var(--linew);
+      color: var(--muted);
+      font-family: 'Jost', sans-serif;
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 1px;
+    }
+
+
+    /* ═══════════════════════════════
+       SUCCESS
+    ═══════════════════════════════ */
+    #success-screen {
+      display: none;
+      text-align: center;
+      padding: 100px 28px 80px;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+
+    #success-screen.show { display: block; animation: riseIn 0.6s ease both; }
+
+    .success-orn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .success-orn-line {
+      height: 1px;
+      width: 50px;
+      background: linear-gradient(90deg, transparent, #3ab8e0);
+    }
+
+    .success-orn-line.rev { background: linear-gradient(90deg, var(--gold), transparent); }
+
+    .success-orn-icon { font-size: 1.8rem; }
+
+    #success-screen h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.4rem;
+      font-weight: 300;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+
+    #success-screen p { font-size: 12px; color: var(--muted); letter-spacing: 0.8px; line-height: 1.9; }
+
+    .success-detail {
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      padding: 20px;
+      margin: 28px 0;
+      text-align: left;
+    }
+
+    .suc-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--linew);
+      letter-spacing: 0.5px;
+    }
+
+    .suc-row:last-child { border-bottom: none; }
+    .suc-row .l { color: var(--muted); }
+    .suc-row .v { color: var(--white); }
+    .suc-row .v.g { color: var(--gold2); font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; }
+
+    .card-notice-box {
+      background: rgba(58,184,224,0.08);
+      border: 1px solid rgba(58,184,224,0.25);
+      border-radius: 3px;
+      padding: 14px 16px;
+      font-size: 12px;
+      color: var(--gold2);
+      letter-spacing: 0.5px;
+      line-height: 1.7;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .btn-gcal {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 14px;
+      border: 1px solid var(--gold);
+      color: var(--gold2);
+      font-family: 'Jost', sans-serif;
+      font-size: 10.5px;
+      font-weight: 400;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 1px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .btn-gcal:hover { background: var(--gold); color: var(--black); }
+
+    .tg-notice-box {
+      background: rgba(255,180,0,0.08);
+      border: 1px solid rgba(255,180,0,0.25);
+      border-radius: 3px;
+      padding: 14px 16px;
+      font-size: 11px;
+      color: #d4aa40;
+      letter-spacing: 0.4px;
+      line-height: 1.7;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+
+    .wa-owner-fallback {
+      margin-bottom: 20px;
+    }
+
+    .wa-fallback-label {
+      font-size: 10px !important;
+      letter-spacing: 1px;
+      color: var(--muted) !important;
+      margin-bottom: 10px !important;
+      margin-top: 0 !important;
+    }
+
+    .btn-wa-owner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #25d366;
+      color: #25d366;
+      font-family: 'Jost', sans-serif;
+      font-size: 10.5px;
+      font-weight: 400;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 1px;
+      transition: background 0.3s, color 0.3s;
+      margin-bottom: 12px;
+    }
+
+    .btn-wa-owner:hover { background: #25d366; color: var(--black); }
+
+    .btn-restart {
+      display: inline-block;
+      padding: 12px 28px;
+      border: 1px solid var(--linew);
+      color: var(--muted);
+      font-family: 'Jost', sans-serif;
+      font-size: 9.5px;
+      font-weight: 400;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      background: none;
+      cursor: pointer;
+      border-radius: 1px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-restart:hover { border-color: var(--gold); color: var(--gold); }
+
+
+    /* ═══════════════════════════════
+       FOOTER
+    ═══════════════════════════════ */
+    .footer {
+      border-top: 1px solid var(--linew);
+      padding: 28px 24px;
+      text-align: center;
+    }
+
+    .footer-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 300;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+
+    .footer-info {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 1.5px;
+    }
+
+
+    /* ═══════════════════════════════
+       ANIMATIONS
+    ═══════════════════════════════ */
+    @keyframes riseIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to   { transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero" id="hero-section">
+
+  <!-- car-bg removed -->
+  <div class="car-bg-layer" style="display:none">
+    <svg viewBox="0 0 900 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="cg1" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   stop-color="#3ab8e0" stop-opacity="0"/>
+          <stop offset="20%"  stop-color="#3ab8e0" stop-opacity="1"/>
+          <stop offset="80%"  stop-color="#3ab8e0" stop-opacity="1"/>
+          <stop offset="100%" stop-color="#3ab8e0" stop-opacity="0"/>
+        </linearGradient>
+        <filter id="cglow" x="-10%" y="-40%" width="120%" height="180%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      <!-- ══════════════════════════════════════
+           CLEAN LOGO-STYLE CAR SILHOUETTE
+           Bold single-stroke outline, coupe shape
+      ══════════════════════════════════════ -->
+
+      <!-- Main outer body contour — top sweep -->
+      <path d="
+        M 95 235
+        C 85 220 80 200 88 182
+        C 96 165 115 155 138 150
+        L 162 115
+        C 180 82 210 60 248 50
+        L 360 36
+        C 400 30 438 40 464 60
+        L 538 100
+        C 572 118 612 128 650 132
+        L 748 136
+        C 772 138 788 152 792 172
+        L 793 198
+        C 793 216 782 232 764 240
+        L 742 248"
+        stroke="url(#cg1)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"
+        fill="none" filter="url(#cglow)"/>
+
+      <!-- Roofline inner arc (second stroke of the coupe roof — like reference) -->
+      <path d="
+        M 162 148
+        C 182 108 214 82 254 68
+        L 368 52
+        C 408 46 444 58 470 80
+        L 538 112
+        C 570 128 610 138 648 142
+        L 742 148"
+        stroke="#3ab8e0" stroke-width="3" stroke-linecap="round"
+        fill="none" filter="url(#cglow)" opacity="0.55"/>
+
+      <!-- Bonnet / hood line sweeping up to windscreen -->
+      <path d="
+        M 88 182
+        C 100 168 122 154 148 148
+        L 162 148"
+        stroke="url(#cg1)" stroke-width="6" stroke-linecap="round"
+        fill="none" filter="url(#cglow)"/>
+
+      <!-- A-pillar + windscreen base -->
+      <path d="
+        M 162 148
+        L 168 188
+        C 170 200 170 218 172 232
+        L 258 232"
+        stroke="url(#cg1)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"
+        fill="none" filter="url(#cglow)"/>
+
+      <!-- FRONT WHEEL ARCH — big upward swooping arc -->
+      <path d="
+        M 95 235
+        C 86 248 85 265 92 278
+        C 100 292 116 300 136 300
+        L 258 300
+        C 270 232 298 224 330 222
+        L 380 222"
+        stroke="url(#cg1)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"
+        fill="none" filter="url(#cglow)"/>
+
+      <!-- Mid sill / floor connecting arches -->
+      <path d="M 380 222 L 440 256 C 448 268 450 282 448 294 L 448 300 L 598 300"
+        stroke="url(#cg1)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"
+        fill="none" filter="url(#cglow)"/>
+
+      <!-- REAR WHEEL ARCH -->
+      <path d="
+        M 598 300
+        C 598 300 610 268 626 254
+        C 638 243 656 238 670 238
+        L 742 248"
+        stroke="url(#cg1)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"
+        fill="none" filter="url(#cglow)"/>
+
+      <!-- Rear tail — the sweeping pointy tail from reference -->
+      <path d="
+        M 742 248
+        C 762 244 778 234 788 218
+        L 793 198"
+        stroke="url(#cg1)" stroke-width="7" stroke-linecap="round"
+        fill="none" filter="url(#cglow)"/>
+
+      <!-- Rear tail decorative flick (like the sharp tip in reference) -->
+      <path d="M 742 248 L 778 256 L 805 248"
+        stroke="#3ab8e0" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"
+        fill="none" filter="url(#cglow)"/>
+      <path d="M 780 256 L 804 270"
+        stroke="#3ab8e0" stroke-width="4" stroke-linecap="round"
+        fill="none" filter="url(#cglow)" opacity="0.6"/>
+
+      <!-- Front nose angular lines (headlight area — like reference's diagonal strokes) -->
+      <path d="M 90 170 L 140 156" stroke="#3ab8e0" stroke-width="6" stroke-linecap="round" filter="url(#cglow)"/>
+      <path d="M 87 185 L 138 172" stroke="#3ab8e0" stroke-width="4" stroke-linecap="round" filter="url(#cglow)" opacity="0.6"/>
+      <path d="M 86 200 L 136 190" stroke="#3ab8e0" stroke-width="2.5" stroke-linecap="round" filter="url(#cglow)" opacity="0.35"/>
+
+      <!-- FRONT WHEEL rings -->
+      <circle cx="310" cy="300" r="68" stroke="url(#cg1)" stroke-width="5.5" fill="none" filter="url(#cglow)"/>
+      <circle cx="310" cy="300" r="46" stroke="#3ab8e0" stroke-width="2.5" fill="none" opacity="0.45"/>
+      <circle cx="310" cy="300" r="18" stroke="#3ab8e0" stroke-width="2" fill="none" opacity="0.3"/>
+      <!-- 5 spokes -->
+      <line x1="310" y1="232" x2="310" y2="254" stroke="#3ab8e0" stroke-width="2.5" stroke-linecap="round" filter="url(#cglow)" opacity="0.7"/>
+      <line x1="355" y1="245" x2="336" y2="260" stroke="#3ab8e0" stroke-width="2.5" stroke-linecap="round" filter="url(#cglow)" opacity="0.7"/>
+      <line x1="338" y1="332" x2="326" y2="316" stroke="#3ab8e0" stroke-width="2.5" stroke-linecap="round" filter="url(#cglow)" opacity="0.7"/>
+      <line x1="282" y1="332" x2="294" y2="316" stroke="#3ab8e0" stroke-width="2.5" stroke-linecap="round" filter="url(#cglow)" opacity="0.7"/>
+      <line x1="265" y1="245" x2="284" y2="260" stroke="#3ab8e0" stroke-width="2.5" stroke-linecap="round" filter="url(#cglow)" opacity="0.7"/>
+      <circle cx="310" cy="300" r="7" stroke="#3ab8e0" stroke-width="1.8" fill="none" opacity="0.6"/>
+
+      <!-- REAR WHEEL rings -->
+      <circle cx="524" cy="300" r="68" stroke="url(#cg1)" stroke-width="5.5" fill="none" filter="url(#cglow)"/>
+      <circle cx="524" cy="300" r="46" stroke="#3ab8e0" stroke-width="2.5" fill="none" opacity="0.45"/>
+      <circle cx="524" cy="300" r="18" stroke="#3ab8e0" stroke-width="2" fill="none" opacity="0.3"/>
+      <line x1="524" y1="232" x2="524" y2="254" stroke="#3ab8e0" stroke-width="2.5" stroke-linecap="round" filter="url(#cglow)" opacity="0.7"/>
+      <line x1="569" y1="245" x2="550" y2="260" stroke="#3ab8e0" stroke-width="2.5" stroke-linecap="round" filter="url(#cglow)" opacity="0.7"/>
+      <line x1="552" y1="332" x2="540" y2="316" stroke="#3ab8e0" stroke-width="2.5" stroke-linecap="round" filter="url(#cglow)" opacity="0.7"/>
+      <line x1="496" y1="332" x2="508" y2="316" stroke="#3ab8e0" stroke-width="2.5" stroke-linecap="round" filter="url(#cglow)" opacity="0.7"/>
+      <line x1="479" y1="245" x2="498" y2="260" stroke="#3ab8e0" stroke-width="2.5" stroke-linecap="round" filter="url(#cglow)" opacity="0.7"/>
+      <circle cx="524" cy="300" r="7" stroke="#3ab8e0" stroke-width="1.8" fill="none" opacity="0.6"/>
+
+      <!-- ground line -->
+      <line x1="50" y1="308" x2="850" y2="308" stroke="url(#cg1)" stroke-width="0.8" opacity="0.2"/>
+    </svg>
+  </div>
+
+  <!-- water drops -->
+  <div class="drops-layer" id="drops-layer"></div>
+
+  <div class="hero-content">
+    <div class="hero-pre">
+      <span></span>
+      <div class="hero-pre-text">Car Wash Professionale</div>
+      <span></span>
+    </div>
+    <div class="hero-logo">Aqua<em>Lux</em></div>
+    <p class="hero-tagline">Lavaggio a mano · Prodotti premium · Risultati impeccabili</p>
+    <div class="hero-water-msg">
+      <span>💧</span>
+      <span>Hai trovato il nostro volantino? Scorri per scegliere il tuo lavaggio</span>
+      <span>💧</span>
+    </div>
+    <div class="hero-car-row">
+      <div class="hero-car-icon">🚗</div>
+      <div class="hero-car-lines">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <span class="hero-scroll-text">Scopri i prezzi</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+
+<!-- ═══ PLANS SECTION ═══ -->
+<div id="plans-section">
+
+  <div class="sec-header">
+    <div class="sec-ornament">
+      <div class="orn-line"></div>
+      <div class="orn-diamond"></div>
+      <div class="orn-line rev"></div>
+    </div>
+    <div class="sec-label">I nostri servizi</div>
+    <h2 class="sec-title">Scegli il tuo<br/><em>trattamento</em></h2>
+    <p class="sec-sub">Ogni lavaggio, eseguito a mano con cura</p>
+  </div>
+
+  <div class="plans-wrap">
+
+    <!-- ESSENZIALE -->
+    <div class="plan-card" onclick="choosePlan('essenziale')">
+      <div class="card-inner">
+        <div class="card-left">
+          <div class="plan-badge">Livello I</div>
+          <div class="plan-name">Essenziale</div>
+          <div class="plan-desc">Solo esterno — rapido ed efficace</div>
+        </div>
+        <div class="card-right">
+          <div class="plan-price"><span class="plan-currency">€</span>15</div>
+          <div class="plan-per">a lavaggio</div>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <ul class="features">
+        <li><span class="feat-mark"><svg viewBox="0 0 8 8"><polyline points="1,4 3,6 7,2" stroke="#b8924a" stroke-width="1.2" fill="none"/></svg></span> Lavaggio esterno a mano</li>
+        <li><span class="feat-mark"><svg viewBox="0 0 8 8"><polyline points="1,4 3,6 7,2" stroke="#b8924a" stroke-width="1.2" fill="none"/></svg></span> Asciugatura con panni in microfibra</li>
+        <li><span class="feat-mark"><svg viewBox="0 0 8 8"><polyline points="1,4 3,6 7,2" stroke="#b8924a" stroke-width="1.2" fill="none"/></svg></span> Vetri esterni</li>
+        <li class="dim"><span class="feat-mark no"></span> Pulizia interni e aspirazione</li>
+        <li class="dim"><span class="feat-mark no"></span> Cerchi e trattamento gomme</li>
+      </ul>
+      <button class="btn-choose">Scegli — €15</button>
+    </div>
+
+    <!-- COMPLETO -->
+    <div class="plan-card featured" onclick="choosePlan('completo')">
+      <div class="card-inner">
+        <div class="card-left">
+          <div class="plan-badge" style="color:var(--gold3);border-color:rgba(240,216,152,0.3)">⭐ Più scelto</div>
+          <div class="plan-name">Completo</div>
+          <div class="plan-desc">Dentro e fuori, come appena acquistata</div>
+        </div>
+        <div class="card-right">
+          <div class="plan-price"><span class="plan-currency">€</span>30</div>
+          <div class="plan-per">a lavaggio</div>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <ul class="features">
+        <li><span class="feat-mark"><svg viewBox="0 0 8 8"><polyline points="1,4 3,6 7,2" stroke="#b8924a" stroke-width="1.2" fill="none"/></svg></span> Tutto del piano Essenziale</li>
+        <li><span class="feat-mark"><svg viewBox="0 0 8 8"><polyline points="1,4 3,6 7,2" stroke="#b8924a" stroke-width="1.2" fill="none"/></svg></span> Pulizia interni e aspirazione</li>
+        <li><span class="feat-mark"><svg viewBox="0 0 8 8"><polyline points="1,4 3,6 7,2" stroke="#b8924a" stroke-width="1.2" fill="none"/></svg></span> Cerchi e trattamento gomme</li>
+        <li><span class="feat-mark"><svg viewBox="0 0 8 8"><polyline points="1,4 3,6 7,2" stroke="#b8924a" stroke-width="1.2" fill="none"/></svg></span> Vetri interni ed esterni</li>
+        <li class="dim"><span class="feat-mark no"></span> Cera protettiva</li>
+      </ul>
+      <button class="btn-choose">Scegli — €30</button>
+    </div>
+
+    <!-- DETAILING -->
+    <div class="plan-card" onclick="choosePlan('detailing')">
+      <div class="card-inner">
+        <div class="card-left">
+          <div class="plan-badge">Livello III · Premium</div>
+          <div class="plan-name">Detailing</div>
+          <div class="plan-desc">Il massimo della cura con cera protettiva</div>
+        </div>
+        <div class="card-right">
+          <div class="plan-price"><span class="plan-currency">€</span>45</div>
+          <div class="plan-per">a lavaggio</div>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <ul class="features">
+        <li><span class="feat-mark"><svg viewBox="0 0 8 8"><polyline points="1,4 3,6 7,2" stroke="#b8924a" stroke-width="1.2" fill="none"/></svg></span> Tutto del piano Completo</li>
+        <li><span class="feat-mark"><svg viewBox="0 0 8 8"><polyline points="1,4 3,6 7,2" stroke="#b8924a" stroke-width="1.2" fill="none"/></svg></span> Lucidatura carrozzeria</li>
+        <li><span class="feat-mark"><svg viewBox="0 0 8 8"><polyline points="1,4 3,6 7,2" stroke="#b8924a" stroke-width="1.2" fill="none"/></svg></span> Cera protettiva professionale</li>
+        <li><span class="feat-mark"><svg viewBox="0 0 8 8"><polyline points="1,4 3,6 7,2" stroke="#b8924a" stroke-width="1.2" fill="none"/></svg></span> Trattamento plastica esterna</li>
+        <li><span class="feat-mark"><svg viewBox="0 0 8 8"><polyline points="1,4 3,6 7,2" stroke="#b8924a" stroke-width="1.2" fill="none"/></svg></span> Profumazione abitacolo</li>
+      </ul>
+      <button class="btn-choose">Scegli — €45</button>
+    </div>
+
+  </div>
+
+
+  <!-- ═══ REFERRAL SECTION ═══ -->
+  <div class="referral-section">
+    <div class="referral-card">
+      <div class="ref-icon">🤝</div>
+      <div class="ref-tag">Offerta esclusiva</div>
+      <h3 class="ref-title">Porta un amico,<br/>vinci il <em>Detailing</em></h3>
+      <p class="ref-desc">
+        Per ogni amico che porti e che sceglie uno qualsiasi dei nostri servizi, tu ottieni il lavaggio <strong style="color:var(--white)">Detailing completo con cera</strong> a un prezzo speciale riservato.
+      </p>
+
+      <div class="ref-highlight">
+        <div class="ref-highlight-left">
+          Detailing con cera
+          <strong>Prezzo amico</strong>
+        </div>
+        <div class="ref-price">
+          <div class="ref-old">€45</div>
+          <div class="ref-new">€25</div>
+        </div>
+      </div>
+
+      <div class="ref-steps">
+        <div class="ref-step">
+          <span class="step-num">I.</span>
+          <span>Porta un amico che non ha mai usato AquaLux</span>
+        </div>
+        <div class="ref-step">
+          <span class="step-num">II.</span>
+          <span>Il tuo amico sceglie uno qualsiasi dei nostri piani</span>
+        </div>
+        <div class="ref-step">
+          <span class="step-num">III.</span>
+          <span>Tu ricevi il Detailing completo con cera a soli €25</span>
+        </div>
+      </div>
+
+      <a href="https://wa.me/393473785847?text=Ciao!%20Voglio%20info%20sull'offerta%20Porta%20un%20Amico%20di%20AquaLux" class="btn-ref-wa" target="_blank">
+        ✉ Attiva l'offerta su WhatsApp
+      </a>
+    </div>
+  </div>
+
+
+  <!-- ═══ CONTACT SECTION ═══ -->
+  <div class="contact-section">
+    <div class="contact-card">
+      <div class="contact-ornament">
+        <span></span>
+        <div class="orn-diamond"></div>
+        <span></span>
+      </div>
+      <h3 class="contact-title">Hai domande?</h3>
+      <p class="contact-sub">Scrivici su WhatsApp, rispondiamo in pochi minuti</p>
+      <a href="https://wa.me/393473785847?text=Ciao!%20Ho%20trovato%20il%20volantino%20di%20AquaLux%20e%20vorrei%20maggiori%20informazioni." class="btn-wa" target="_blank">
+        <span class="wa-icon">💬</span>
+        Contattaci su WhatsApp
+      </a>
+    </div>
+  </div>
+
+</div><!-- /plans-section -->
+
+
+<!-- ═══ AVAILABILITY SECTION ═══ -->
+<div id="avail-section">
+
+  <div style="max-width:480px;margin:0 auto;padding:60px 20px 0">
+    <button class="avail-back" onclick="goBack()">← Torna ai servizi</button>
+  </div>
+
+  <div class="sec-header" style="padding-top:0">
+    <div class="sec-ornament">
+      <div class="orn-line"></div>
+      <div class="orn-diamond"></div>
+      <div class="orn-line rev"></div>
+    </div>
+    <div class="sec-label">Prenota</div>
+    <h2 class="sec-title">Scegli la tua<br/><em>data</em></h2>
+  </div>
+
+  <div style="padding:0 20px;max-width:480px;margin:0 auto">
+    <div class="avail-plan-info">
+      <div>
+        <div style="font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Piano selezionato</div>
+        <div class="avail-plan-name" id="avail-plan-name">—</div>
+      </div>
+      <div class="avail-plan-price" id="avail-plan-price">—</div>
+    </div>
+
+    <div class="week-nav">
+      <div class="week-lbl" id="week-lbl">Questa settimana</div>
+      <div class="week-btns">
+        <button class="wk-btn" onclick="changeWeek(-1)">‹</button>
+        <button class="wk-btn" onclick="changeWeek(1)">›</button>
+      </div>
+    </div>
+
+    <div class="slots-list" id="slots-list"></div>
+  </div>
+</div>
+
+
+<!-- ═══ SUCCESS ═══ -->
+<div id="success-screen">
+  <div class="success-orn">
+    <div class="success-orn-line"></div>
+    <div class="success-orn-icon">✦</div>
+    <div class="success-orn-line rev"></div>
+  </div>
+  <h2>Prenotato!</h2>
+  <p>Riceveremo subito la tua richiesta.<br/>Ti confermeremo l'appuntamento via WhatsApp.</p>
+
+  <!-- card payment notice -->
+  <div id="card-notice" style="display:none" class="card-notice-box">
+    💳 Riceverai il link di pagamento su WhatsApp prima dell'appuntamento.
+  </div>
+
+  <div class="success-detail" id="success-detail"></div>
+
+  <!-- Telegram setup notice (shown only until token is configured) -->
+  <div id="tg-setup-notice" style="display:none" class="tg-notice-box">
+    ⚙️ <strong>Configura Telegram</strong> per ricevere notifiche istantanee.<br/>
+    Vedi le istruzioni nel codice sorgente (sezione TELEGRAM_BOT_TOKEN).
+  </div>
+
+  <!-- WA fallback (shown only when Telegram not yet configured) -->
+  <div id="wa-fallback-wrap" class="wa-owner-fallback">
+    <p class="wa-fallback-label">📲 Telegram non ancora configurato — notifica manuale:</p>
+    <a id="wa-owner-btn" href="#" target="_blank" class="btn-wa-owner">
+      Invia riepilogo su WhatsApp
+    </a>
+  </div>
+
+  <button class="btn-restart" onclick="resetAll()">← Torna all'inizio</button>
+</div>
+
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="footer">
+  <div class="footer-name">AquaLux</div>
+  <div class="footer-info">Via del Mercato, Caponago &nbsp;·&nbsp; WhatsApp 347 378 5847</div>
+</footer>
+
+
+<!-- STICKY BOOK BAR -->
+<div class="book-bar" id="book-bar">
+  <div class="book-bar-inner">
+    <div class="book-bar-info">
+      <small>Slot selezionato</small>
+      <strong id="bar-text">—</strong>
+    </div>
+    <button class="btn-book-now" onclick="openSheet()">Prenota</button>
+  </div>
+</div>
+
+
+<!-- CONFIRM SHEET — multi step -->
+<div class="overlay" id="overlay" onclick="sheetOutside(event)">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+
+    <!-- STEP 1: dati cliente -->
+    <div id="step1">
+      <div class="sheet-pre">Passo 1 di 3</div>
+      <div class="sheet-title">I tuoi dati</div>
+      <div class="form-group">
+        <label class="form-label">Nome e cognome</label>
+        <input class="form-input" id="inp-nome" type="text" placeholder="es. Marco Rossi" autocomplete="name"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Modello dell'auto</label>
+        <input class="form-input" id="inp-auto" type="text" placeholder="es. Audi A4, BMW Serie 3…" autocomplete="off"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Numero di telefono</label>
+        <input class="form-input" id="inp-tel" type="tel" placeholder="es. 333 1234567" autocomplete="tel"/>
+      </div>
+      <div class="form-error" id="err1"></div>
+      <button class="sheet-confirm" onclick="goStep2()">Avanti →</button>
+      <button class="sheet-cancel-btn" onclick="closeSheet()">Annulla</button>
+    </div>
+
+    <!-- STEP 2: pagamento -->
+    <div id="step2" style="display:none">
+      <div class="sheet-pre">Passo 2 di 3</div>
+      <div class="sheet-title">Come paghi?</div>
+      <div class="pay-options">
+        <div class="pay-opt" id="pay-cash" onclick="selectPay('cash')">
+          <div class="pay-icon">💵</div>
+          <div class="pay-label">Contanti</div>
+          <div class="pay-desc">Paghi direttamente in loco</div>
+        </div>
+        <div class="pay-opt" id="pay-card" onclick="selectPay('card')">
+          <div class="pay-icon">💳</div>
+          <div class="pay-label">Carta</div>
+          <div class="pay-desc">Ricevi link su WhatsApp prima dell'appuntamento</div>
+        </div>
+      </div>
+      <div class="form-error" id="err2"></div>
+      <div class="sheet-btn-row">
+        <button class="sheet-back-btn" onclick="goStep1()">← Indietro</button>
+        <button class="sheet-confirm" style="flex:1" onclick="goStep3()">Avanti →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: riepilogo finale -->
+    <div id="step3" style="display:none">
+      <div class="sheet-pre">Passo 3 di 3</div>
+      <div class="sheet-title">Conferma</div>
+      <div class="summary-list" id="summary-list"></div>
+      <div class="form-error" id="err3"></div>
+      <div class="sheet-btn-row">
+        <button class="sheet-back-btn" onclick="goStep2()">← Indietro</button>
+        <button class="sheet-confirm" style="flex:1" onclick="confirmBooking()">✓ Conferma</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<script>
+/* ── DROP GENERATOR ── */
+(function() {
+  const layer = document.getElementById('drops-layer');
+  const N = 22;
+  for (let i = 0; i < N; i++) {
+    const d = document.createElement('div');
+    d.className = 'drop';
+    const left   = Math.random() * 100;
+    const height = 40 + Math.random() * 80;
+    const dur    = 1.8 + Math.random() * 3.5;
+    const delay  = Math.random() * 4;
+    d.style.cssText = `left:${left}%;height:${height}px;animation-duration:${dur}s;animation-delay:${delay}s;opacity:${0.3+Math.random()*0.5}`;
+    layer.appendChild(d);
+  }
+})();
+
+/* ── DATA ── */
+const PLANS = {
+  essenziale: { label:'Essenziale', price:'€15', dur:'~30 min' },
+  completo:   { label:'Completo',   price:'€30', dur:'~50 min' },
+  detailing:  { label:'Detailing',  price:'€45', dur:'1h 30min' }
+};
+
+const DAYS = ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'];
+
+// Disponibilità reali per giorno della settimana
+// dayOfWeek: 1=Lun, 2=Mar, 3=Mer, 4=Gio, 5=Ven, 0=Dom, 6=Sab
+// Martedì e weekend: non disponibili
+const SCHEDULE = {
+  1: { label:'Lunedì',    slots: ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30'] }, // 08:00-16:00 (ultimo slot 15:30 per 30min)
+  2: null,  // Martedì — non disponibile
+  3: { label:'Mercoledì', slots: ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30'] }, // 08:00-13:00 (ultimo slot 12:30)
+  4: { label:'Giovedì',   slots: ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30'] }, // 08:00-12:00 (ultimo slot 11:30)
+  5: { label:'Venerdì',   slots: ['13:00','13:30','14:00','14:30','15:00','15:30'] }, // 13:00-16:00 (ultimo slot 15:30)
+  0: null,  // Domenica — non disponibile
+  6: null   // Sabato — non disponibile
+};
+
+// Durate in minuti per piano
+const DURATIONS = { essenziale: 30, completo: 50, detailing: 90 };
+
+// Filtra gli slot in base alla durata del piano scelto
+// (non mostrare slot che finirebbero oltre l'orario di chiusura)
+const CLOSING = { 1: '16:00', 3: '13:00', 4: '12:00', 5: '16:00' };
+
+function timeToMin(t) {
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + m;
+}
+
+let curPlan = null, selSlot = null, weekOff = 0, slots = [];
+
+function genSlots(off) {
+  const list = [];
+  const base = new Date();
+  // Salta al giorno corrente, mostra 14 giorni alla volta
+  base.setDate(base.getDate() + off * 7);
+
+  for (let d = 0; d < 7; d++) {
+    const day = new Date(base);
+    day.setDate(base.getDate() + d);
+    const dow = day.getDay(); // 0=Dom, 1=Lun...
+
+    const sched = SCHEDULE[dow];
+    if (!sched) continue; // giorno non disponibile
+
+    const durMin  = DURATIONS[curPlan] || 30;
+    const closing = timeToMin(CLOSING[dow]);
+
+    sched.slots.forEach(t => {
+      // Escludi slot in cui il servizio finirebbe dopo l'orario di chiusura
+      if (timeToMin(t) + durMin > closing) return;
+      list.push({
+        dayName: DAYS[dow],
+        dayNum:  day.getDate(),
+        month:   day.toLocaleDateString('it-IT', { month:'short' }),
+        time:    t,
+        occupied: false  // gestione reale prenotazioni via backend futuro
+      });
+    });
+  }
+  return list;
+}
+
+function choosePlan(plan) {
+  curPlan = plan; weekOff = 0; selSlot = null;
+  document.getElementById('book-bar').classList.remove('show');
+
+  const p = PLANS[plan];
+  document.getElementById('avail-plan-name').textContent  = p.label;
+  document.getElementById('avail-plan-price').textContent = p.price;
+
+  renderSlots();
+  document.getElementById('plans-section').style.display = 'none';
+  document.getElementById('hero-section').style.display  = 'none';
+  const av = document.getElementById('avail-section');
+  av.classList.add('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderSlots() {
+  slots = genSlots(weekOff);
+  const lbl = document.getElementById('week-lbl');
+  lbl.textContent = weekOff === 0 ? 'Questa settimana' : weekOff > 0 ? 'Avanti di ' + weekOff : 'Indietro di ' + Math.abs(weekOff);
+
+  const list = document.getElementById('slots-list');
+  list.innerHTML = '';
+  slots.forEach((s, i) => {
+    const cls = s.occupied ? 'occupied' : 'free';
+    const row = document.createElement('div');
+    row.className = 'slot-row ' + cls;
+    row.id = 'sr-' + i;
+    row.innerHTML =
+      '<div class="slot-left">' +
+        '<div class="slot-date-col"><div class="slot-day">' + s.dayName + '</div><div class="slot-num">' + s.dayNum + '</div></div>' +
+        '<div><div class="slot-time-txt">' + s.time + '</div><div class="slot-dur">' + s.month + ' &middot; ' + PLANS[curPlan].dur + '</div></div>' +
+      '</div>' +
+      '<div class="slot-status-dot"></div>';
+    if (!s.occupied) row.onclick = () => pickSlot(i);
+    list.appendChild(row);
+  });
+}
+
+function pickSlot(i) {
+  selSlot = slots[i];
+  document.querySelectorAll('.slot-row.free,.slot-row.selected').forEach(r => {
+    r.classList.remove('selected');
+    if (!r.classList.contains('occupied')) r.classList.add('free');
+  });
+  const r = document.getElementById('sr-' + i);
+  r.classList.remove('free');
+  r.classList.add('selected');
+
+  document.getElementById('bar-text').textContent =
+    selSlot.dayName + ' ' + selSlot.dayNum + ' ' + selSlot.month + ' · ' + selSlot.time;
+  document.getElementById('book-bar').classList.add('show');
+}
+
+function changeWeek(d) {
+  weekOff += d;
+  if (weekOff < 0) weekOff = 0; // non andare nel passato
+  selSlot = null;
+  document.getElementById('book-bar').classList.remove('show');
+  renderSlots();
+}
+
+/* ── step state ── */
+let payMethod = null;
+
+function openSheet() {
+  if (!selSlot) return;
+  // reset form
+  ['inp-nome','inp-auto','inp-tel'].forEach(id => { document.getElementById(id).value = ''; });
+  ['err1','err2','err3'].forEach(id => { document.getElementById(id).textContent = ''; });
+  payMethod = null;
+  document.querySelectorAll('.pay-opt').forEach(el => el.classList.remove('selected'));
+  showStep(1);
+  document.getElementById('overlay').classList.add('open');
+}
+
+function showStep(n) {
+  [1,2,3].forEach(i => {
+    document.getElementById('step'+i).style.display = i===n ? 'block' : 'none';
+  });
+}
+
+function goStep1() { showStep(1); }
+
+function goStep2() {
+  const nome = document.getElementById('inp-nome').value.trim();
+  const auto = document.getElementById('inp-auto').value.trim();
+  const tel  = document.getElementById('inp-tel').value.trim();
+  const err  = document.getElementById('err1');
+  if (!nome) { err.textContent = 'Inserisci il tuo nome e cognome.'; return; }
+  if (!auto) { err.textContent = 'Inserisci il modello della tua auto.'; return; }
+  if (!tel || tel.replace(/\D/g,'').length < 8) { err.textContent = 'Inserisci un numero di telefono valido.'; return; }
+  err.textContent = '';
+  showStep(2);
+}
+
+function selectPay(method) {
+  payMethod = method;
+  document.getElementById('pay-cash').classList.toggle('selected', method==='cash');
+  document.getElementById('pay-card').classList.toggle('selected', method==='card');
+}
+
+function goStep3() {
+  if (!payMethod) { document.getElementById('err2').textContent = 'Seleziona un metodo di pagamento.'; return; }
+  document.getElementById('err2').textContent = '';
+  const p    = PLANS[curPlan];
+  const nome = document.getElementById('inp-nome').value.trim();
+  const auto = document.getElementById('inp-auto').value.trim();
+  const tel  = document.getElementById('inp-tel').value.trim();
+  const payLabel = payMethod === 'cash' ? '💵 Contanti' : '💳 Carta (link su WhatsApp)';
+  document.getElementById('summary-list').innerHTML =
+    row('Servizio', p.label) +
+    row('Data', selSlot.dayName + ' ' + selSlot.dayNum + ' ' + selSlot.month) +
+    row('Orario', selSlot.time + ' (' + p.dur + ')') +
+    row('Intestatario', nome) +
+    row('Auto', auto) +
+    row('Telefono', tel) +
+    row('Pagamento', payLabel) +
+    row('Totale', p.price, true);
+  showStep(3);
+}
+
+function row(l,v,gold=false) {
+  return '<div class="sum-row"><span class="lbl">'+l+'</span><span class="val'+(gold?' gold':'')+'">'+v+'</span></div>';
+}
+
+function sheetOutside(e) { if (e.target.id === 'overlay') closeSheet(); }
+function closeSheet() { document.getElementById('overlay').classList.remove('open'); }
+
+function confirmBooking() {
+  const p        = PLANS[curPlan];
+  const nome     = document.getElementById('inp-nome').value.trim();
+  const auto     = document.getElementById('inp-auto').value.trim();
+  const tel      = document.getElementById('inp-tel').value.trim();
+  const payLabel = payMethod === 'cash' ? 'Contanti' : 'Carta (link WhatsApp)';
+
+  // ── Build Google Calendar URL (for the OWNER) ──
+  const [hh, mm]   = selSlot.time.split(':').map(Number);
+  const durMin     = DURATIONS[curPlan] || 60;
+  const year       = new Date().getFullYear();
+  const monthMap   = {gen:1,feb:2,mar:3,apr:4,mag:5,giu:6,lug:7,ago:8,set:9,ott:10,nov:11,dic:12};
+  const mNum       = monthMap[selSlot.month] || (new Date().getMonth()+1);
+  const pad        = n => String(n).padStart(2,'0');
+  const startDt    = `${year}${pad(mNum)}${pad(selSlot.dayNum)}T${pad(hh)}${pad(mm)}00`;
+  const endDate    = new Date(year, mNum-1, selSlot.dayNum, hh, mm + durMin);
+  const endDt      = `${endDate.getFullYear()}${pad(endDate.getMonth()+1)}${pad(endDate.getDate())}T${pad(endDate.getHours())}${pad(endDate.getMinutes())}00`;
+  const calTitle   = encodeURIComponent(`AquaLux – ${p.label} – ${nome} (${auto})`);
+  const calDetails = encodeURIComponent(`Cliente: ${nome}
+Auto: ${auto}
+Tel: ${tel}
+Pagamento: ${payLabel}
+Prezzo: ${p.price}`);
+  const calLoc     = encodeURIComponent('Via del Mercato, Caponago');
+  const gcalUrl    = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${calTitle}&dates=${startDt}/${endDt}&details=${calDetails}&location=${calLoc}`;
+
+  // ══════════════════════════════════════════════
+  // NOTIFICA IMMEDIATA via Telegram Bot
+  // Setup (3 minuti, una sola volta):
+  // 1. Apri Telegram → cerca @BotFather → /newbot → copia il TOKEN
+  // 2. Cerca @userinfobot su Telegram → copia il tuo CHAT_ID
+  // 3. Incolla TOKEN e CHAT_ID qui sotto e ripubblica su GitHub
+  // ══════════════════════════════════════════════
+  const TELEGRAM_BOT_TOKEN = 'INSERISCI_QUI_IL_TUO_TOKEN'; // es. 7123456789:AAF...
+  const TELEGRAM_CHAT_ID   = 'INSERISCI_QUI_IL_TUO_CHAT_ID'; // es. 123456789
+
+  const tgMessage =
+    `\u{1F697} *NUOVA PRENOTAZIONE AQUALUX*\n\n` +
+    `\u{1F464} *Cliente:* ${nome}\n` +
+    `\u{1F699} *Auto:* ${auto}\n` +
+    `\u{1F4DE} *Tel:* ${tel}\n` +
+    `\u{1F4C5} *Data:* ${selSlot.dayName} ${selSlot.dayNum} ${selSlot.month}\n` +
+    `\u23F0 *Orario:* ${selSlot.time} (${p.dur || '1h 30min'})\n` +
+    `\u{1F6C1} *Servizio:* ${p.label}\n` +
+    `\u{1F4B0} *Prezzo:* ${p.price}\n` +
+    `\u{1F4B3} *Pagamento:* ${payLabel}\n\n` +
+    `[\u{1F4C6} Aggiungi in Google Calendar](${gcalUrl})`;
+
+  // Invio notifica Telegram (istantaneo, invisibile al cliente)
+  if (TELEGRAM_BOT_TOKEN !== 'INSERISCI_QUI_IL_TUO_TOKEN') {
+    fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: TELEGRAM_CHAT_ID,
+        text: tgMessage,
+        parse_mode: 'Markdown',
+        disable_web_page_preview: false
+      })
+    }).catch(() => {});
+  }
+
+  // Fallback WA link (visibile nel success screen se Telegram non configurato)
+  const ownerNumber = '393473785847';
+  const waMsg = encodeURIComponent(
+    `NUOVA PRENOTAZIONE AQUALUX\n\n` +
+    `Cliente: ${nome}\n` +
+    `Auto: ${auto}\n` +
+    `Tel: ${tel}\n` +
+    `Data: ${selSlot.dayName} ${selSlot.dayNum} ${selSlot.month}\n` +
+    `Orario: ${selSlot.time} (${p.dur || '1h 30min'})\n` +
+    `Servizio: ${p.label}\n` +
+    `Prezzo: ${p.price}\n` +
+    `Pagamento: ${payLabel}\n\n` +
+    `Agenda: ${gcalUrl}`
+  );
+  document.getElementById('wa-owner-btn').href = `https://wa.me/${ownerNumber}?text=${waMsg}`;
+  // Show WA fallback only if Telegram not configured
+  document.getElementById('wa-fallback-wrap').style.display =
+    TELEGRAM_BOT_TOKEN === 'INSERISCI_QUI_IL_TUO_TOKEN' ? 'block' : 'none';
+}
+
+function srow(l,v,g=false) {
+  return '<div class="suc-row"><span class="l">'+l+'</span><span class="v'+(g?' g':'')+'">'+v+'</span></div>';
+}
+
+function goBack() {
+  document.getElementById('avail-section').classList.remove('show');
+  document.getElementById('plans-section').style.display = '';
+  document.getElementById('hero-section').style.display  = '';
+  document.getElementById('book-bar').classList.remove('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function resetAll() {
+  document.getElementById('success-screen').classList.remove('show');
+  document.getElementById('plans-section').style.display = '';
+  document.getElementById('hero-section').style.display  = '';
+  curPlan = null; selSlot = null;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
